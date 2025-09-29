@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deliveries</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f3f4f6; color:#333; }
+    nav { margin-bottom:20px; }
+    nav a { margin-right:15px; text-decoration:none; color:#3498db; font-weight:bold; }
+    .btn { background:#3498db; color:white; padding:6px 12px; border:none; border-radius:5px; cursor:pointer; }
+    .btn:hover { background:#2980b9; }
+    table { width:100%; border-collapse:collapse; background:white; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+    th { background:#f9fafb; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="order.html">📝 Place Order</a>
+    <a href="deliveries.html">🚛 Check Deliveries</a>
+    <a href="stock.html">📊 Stock & Analysis</a>
+    <a href="dashboard.html">📈 Dashboard</a>
+  </nav>
+  <hr>
+
+  <h2>Delivery Orders</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Department</th>
+        <th>Quantity (Liters)</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Requested By</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="deliveries-body"></tbody>
+  </table>
+
+  <script>
+    async function loadDeliveries() {
+      try {
+        const res = await fetch('/api/deliveries');
+        const deliveries = await res.json();
+        const tbody = document.getElementById('deliveries-body');
+        tbody.innerHTML = '';
+
+        deliveries.forEach(d => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${d.id}</td>
+            <td>${d.department}</td>
+            <td>${d.litres}</td>
+            <td>${d.priority}</td>
+            <td>${d.status}</td>
+            <td>${d.requested_by}</td>
+            <td>
+              <button class="btn" onclick="markDelivered(${d.id})"
+                ${d.status === 'Delivered' ? 'disabled' : ''}>
+                Mark Delivered
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Failed to load deliveries:', err);
+      }
+    }
+
+    async function markDelivered(id) {
+      if (!confirm('Mark this order as delivered?')) return;
+      const res = await fetch(`/api/deliveries/${id}/deliver`, { method: 'PUT' });
+      if (res.ok) loadDeliveries();
+      else alert('Update failed');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDeliveries);
+  </script>
+</body>
+</html>

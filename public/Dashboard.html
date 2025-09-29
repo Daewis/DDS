@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Overview</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f3f4f6; color: #333; }
+    nav { margin-bottom: 20px; }
+    nav a { margin-right: 15px; text-decoration: none; color: #3498db; font-weight: bold; }
+    .btn { background: #3498db; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; }
+    .btn:hover { background: #2980b9; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-bottom:30px; }
+    .card { background:white; border-left:4px solid #999; padding:15px; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+    .card-total { border-left-color: #666 !important; }
+    .card-pending { border-left-color: #f1c40f !important; }
+    .card-transit { border-left-color: #3498db !important; }
+    .card-delivered { border-left-color: #27ae60 !important; }
+    .card-custom-transit { border-left-color: #3498db !important; }
+    .card h4 { margin:0; font-size:14px; color:#666; }
+    .card .value { font-size:24px; font-weight:bold; margin-top:8px; }
+    .flex { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    table { width:100%; border-collapse:collapse; background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+    th,td { padding:10px; border-bottom:1px solid #eee; text-align:left; }
+    th { background:#f9fafb; font-weight:bold; }
+    .badge { padding:4px 8px; border-radius:12px; font-size:12px; font-weight:bold; text-transform:uppercase; }
+    .pending { background:#fff3cd; color:#856404; }
+    .in_transit { background:#cce5ff; color:#004085; }
+    .delivered { background:#d4edda; color:#155724; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="order.html">📝 Place Order</a>
+    <a href="deliveries.html">🚛 Check Deliveries</a>
+    <a href="stock.html">📊 Stock & Analysis</a>
+    <a href="dashboard.html">📈 Dashboard</a>
+  </nav>
+  <div class="grid">
+    <div class="card card-total"><h4>Total Orders</h4><div class="value" id="stat-total">0</div></div>
+    <div class="card card-pending"><h4>Pending</h4><div class="value" id="stat-pending">0</div></div>
+    <div class="card card-transit"><h4>In Transit</h4><div class="value" id="stat-transit">0</div></div>
+    <div class="card card-delivered"><h4>Delivered</h4><div class="value" id="stat-delivered">0</div></div>
+  </div>
+  <div class="flex">
+    <h3>Recent Deliveries</h3>
+    <button class="btn" onclick="location.href='order.html'">➕ New Order</button>
+  </div>
+  <table>
+    <thead><tr><th>Status</th><th>Department</th><th>Liters</th><th>Priority</th><th>Date</th></tr></thead>
+    <tbody id="deliveries-body"></tbody>
+  </table>
+  <script>
+    const deliveries = [
+      {id:1,status:'pending',department:'University ICT',litres:100,priority:'high',date:'2025-09-01'},
+      {id:2,status:'in_transit',department:'Registry',litres:50,priority:'medium',date:'2025-09-02'},
+      {id:3,status:'delivered',department:'Library',litres:75,priority:'low',date:'2025-08-30'},
+      {id:4,status:'pending',department:'COED',litres:60,priority:'high',date:'2025-09-02'}
+    ];
+    function updateDashboard(){
+      document.getElementById('stat-total').textContent = deliveries.length;
+      document.getElementById('stat-pending').textContent = deliveries.filter(d=>d.status==='pending').length;
+      document.getElementById('stat-transit').textContent = deliveries.filter(d=>d.status==='in_transit').length;
+      document.getElementById('stat-delivered').textContent = deliveries.filter(d=>d.status==='delivered').length;
+      const tbody=document.getElementById('deliveries-body');
+      tbody.innerHTML='';
+      deliveries.forEach(d=>{
+        const row=document.createElement('tr');
+        row.innerHTML = `
+          <td><span class="badge ${d.status}">${d.status.replace('_',' ')}</span></td>
+          <td>${d.department}</td>
+          <td>${d.litres}L</td>
+          <td>${d.priority}</td>
+          <td>${d.date}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+    updateDashboard();
+  </script>
+</body>
+</html>

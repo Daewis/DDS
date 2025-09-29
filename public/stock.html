@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f3f4f6; color:#333; }
+    nav { margin-bottom:20px; }
+    nav a { margin-right:15px; text-decoration:none; color:#3498db; font-weight:bold; }
+    .btn { background:#3498db; color:white; padding:8px 16px; border:none; border-radius:5px; cursor:pointer; }
+    .btn:hover { background:#2980b9; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="order.html">📝 Place Order</a>
+    <a href="deliveries.html">🚛 Check Deliveries</a>
+    <a href="stock.html">📊 Stock & Analysis</a>
+    <a href="dashboard.html">📈 Dashboard</a>
+  </nav>
+  <hr>
+
+  <h2>Stock Level</h2>
+  <p>Current Stock: <strong id="stock-level">2,450</strong> liters</p>
+  <button class="btn" onclick="updateStock()">Update Stock</button>
+
+  <script>
+    function updateStock() {
+      const newStock = prompt("Enter new stock level (liters):", "2450");
+      if(newStock && !isNaN(newStock)) {
+        document.getElementById("stock-level").textContent = parseInt(newStock).toLocaleString();
+        alert("Stock updated.");
+      }
+    }
+  </script>
+</body>
+</html>
